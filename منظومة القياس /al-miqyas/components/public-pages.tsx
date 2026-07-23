@@ -18,7 +18,7 @@ export function TraineeRoutingPage({ traineeCode }: { traineeCode: string }) {
   const state = states[stateKey];
   return (
     <main className="public-page public-routing">
-      <header className="public-header"><div className="public-brand"><div className="logo-pending">شعار</div><div><strong>منظومة المقياس</strong><small>تُشغّل بواسطة شركة الأمد التقنية</small></div></div><Link href="/login">دخول المشرفين</Link></header>
+      <header className="public-header"><div className="public-brand"><img className="brand-mark" src="/brand/al-amad-mark.png" alt="شعار شركة الأمد" /><div><strong>منظومة المقياس</strong><small>تُشغّل بواسطة شركة الأمد</small></div></div><Link href="/login">دخول المشرفين</Link></header>
       <div className="public-content">
         <section className="routing-card">
           <div className="routing-top"><div><span className="eyebrow">بطاقة المتدرّب</span><h1>مرحباً نورة</h1><p>نبض الأمد · الإنعاش القلبي الرئوي الأساسي</p></div><div className="public-code"><small>المعرّف الموحد</small><strong dir="ltr">{traineeCode}</strong></div></div>
@@ -36,13 +36,13 @@ export function VerificationPage({ verifyCode }: { verifyCode: string }) {
   const [status, setStatus] = useState<"valid" | "revoked" | "notfound">("valid");
   return (
     <main className="verify-page">
-      <header className="public-header"><div className="public-brand"><div className="logo-pending">شعار</div><div><strong>منظومة المقياس</strong><small>التحقق من الشهادات</small></div></div><Link href="/login">دخول المشرفين</Link></header>
+      <header className="public-header"><div className="public-brand"><img className="brand-mark" src="/brand/al-amad-mark.png" alt="شعار شركة الأمد" /><div><strong>منظومة المقياس</strong><small>التحقق من الشهادات</small></div></div><Link href="/login">دخول المشرفين</Link></header>
       <div className="verify-wrap">
         <section className={`verification-card verify-${status}`}>
           <div className="verify-emblem"><Icon name={status === "valid" ? "shield" : "warning"} size={38} /></div>
           {status === "valid" ? <><StatusBadge tone="success">شهادة صالحة</StatusBadge><h1>تم التحقق من الشهادة</h1><p>هذه الصفحة تعرض الحد الأدنى المعتمد من البيانات العامة.</p><dl><div><dt>اسم المتدرّبة</dt><dd>نورة سعد القحطاني</dd></div><div><dt>البرنامج</dt><dd>نبض الأمد · BLS Provider</dd></div><div><dt>الجهة المصدرة</dt><dd>كلية الطب · جامعة أم القرى</dd></div><div><dt>رقم الشهادة</dt><dd dir="ltr">AMD-BLS-2026-00417</dd></div><div><dt>تاريخ الإصدار</dt><dd>13 يوليو 2026</dd></div><div><dt>رمز التحقق</dt><dd dir="ltr">{verifyCode}</dd></div></dl><button className="button button-secondary" onClick={() => window.print()}><Icon name="download" size={16} />طباعة نتيجة التحقق</button></> : status === "revoked" ? <><StatusBadge tone="danger">شهادة ملغاة</StatusBadge><h1>هذه الشهادة غير صالحة</h1><p>ألغت الجهة المصدرة الشهادة. راجع الجهة مباشرة للحصول على التفاصيل.</p><div className="public-code"><small>رمز التحقق</small><strong dir="ltr">{verifyCode}</strong></div></> : <><StatusBadge tone="warning">غير موجودة</StatusBadge><h1>تعذر العثور على الشهادة</h1><p>تحقق من الرابط أو أعد مسح رمز QR من النسخة الأصلية للشهادة.</p></>}
         </section>
-        <aside className="verify-side"><div className="logo-pending large">شعار الجهة</div><span>صادرة عن</span><strong>كلية الطب · جامعة أم القرى</strong><small>تُشغّل بمنظومة المقياس · شركة الأمد التقنية</small><div className="demo-state-panel"><span className="eyebrow">معاينة الحالة</span><button className={status === "valid" ? "active" : ""} onClick={() => setStatus("valid")}>صالحة</button><button className={status === "revoked" ? "active" : ""} onClick={() => setStatus("revoked")}>ملغاة</button><button className={status === "notfound" ? "active" : ""} onClick={() => setStatus("notfound")}>غير موجودة</button></div></aside>
+        <aside className="verify-side"><div className="logo-pending large">شعار الجهة</div><span>صادرة عن</span><strong>كلية الطب · جامعة أم القرى</strong><small>تُشغّل بمنظومة المقياس · شركة الأمد</small><div className="demo-state-panel"><span className="eyebrow">معاينة الحالة</span><button className={status === "valid" ? "active" : ""} onClick={() => setStatus("valid")}>صالحة</button><button className={status === "revoked" ? "active" : ""} onClick={() => setStatus("revoked")}>ملغاة</button><button className={status === "notfound" ? "active" : ""} onClick={() => setStatus("notfound")}>غير موجودة</button></div></aside>
       </div>
     </main>
   );

@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { Icon, type IconName } from "./icons";
+import { createSupabaseBrowserClient } from "../lib/supabase/client";
 
 const navigation: Array<{ href: string; label: string; icon: IconName }> = [
   { href: "/dashboard", label: "الملخص", icon: "overview" },
@@ -23,12 +24,19 @@ const tenants = [
 
 export function AppShell({ children, title }: { children: ReactNode; title?: string }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [tenantIndex, setTenantIndex] = useState(0);
   const [tenantOpen, setTenantOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const tenant = tenants[tenantIndex];
+
+  const signOut = async () => {
+    await createSupabaseBrowserClient().auth.signOut();
+    router.replace("/login");
+    router.refresh();
+  };
 
   const active = (href: string) => pathname === href || (href !== "/dashboard" && pathname.startsWith(`${href}/`));
 
@@ -37,7 +45,7 @@ export function AppShell({ children, title }: { children: ReactNode; title?: str
       {mobileOpen && <button className="sidebar-backdrop" aria-label="إغلاق القائمة" onClick={() => setMobileOpen(false)} />}
       <aside className={`sidebar ${mobileOpen ? "sidebar-open" : ""}`}>
         <div className="sidebar-brand">
-          <div className="logo-pending" aria-label="شعار شركة الأمد قيد الإضافة">شعار</div>
+          <img className="brand-mark" src="/brand/al-amad-mark.png" alt="شعار شركة الأمد" />
           <div>
             <strong>منظومة المقياس</strong>
             <span>سجل الإتقان</span>
@@ -111,7 +119,7 @@ export function AppShell({ children, title }: { children: ReactNode; title?: str
                 <div className="topbar-popover account-popover">
                   <Link href="/account"><Icon name="account" size={17} />الملف الشخصي</Link>
                   <Link href="/settings"><Icon name="settings" size={17} />إعدادات الجهة</Link>
-                  <Link href="/login" className="danger-link"><Icon name="logout" size={17} />تسجيل الخروج</Link>
+                  <button type="button" className="danger-link" onClick={signOut}><Icon name="logout" size={17} />تسجيل الخروج</button>
                 </div>
               )}
             </div>

@@ -1,4 +1,4 @@
-import { TraineeWorkspace } from "../../../components/trainee-workspace";
+import { TraineeDetailsPage } from "../../../components/trainee-details-page";
 
 export default async function TraineePage({
   params,
@@ -6,5 +6,5 @@ export default async function TraineePage({
   params: Promise<{ code: string }>;
 }) {
   const { code } = await params;
-  return <TraineeWorkspace traineeCode={code.toUpperCase()} />;
+  return <TraineeDetailsPage traineeCode={code.toUpperCase()} />;
 }

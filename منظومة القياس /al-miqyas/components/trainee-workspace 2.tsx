@@ -210,7 +210,7 @@ function CertificateStage({ status }: { status: StageStatus }) {
       <section className={`certificate-preview ${available ? "" : "certificate-disabled"}`}>
         <div className="certificate-topline">
           <span className="tenant-placeholder">شعار الجهة</span>
-          <span>تُشغّل بمنظومة المقياس · شركة الأمد التقنية</span>
+          <span>تُشغّل بمنظومة المقياس · شركة الأمد</span>
         </div>
         <div className="certificate-body">
           <span>شهادة إتقان معتمدة</span>

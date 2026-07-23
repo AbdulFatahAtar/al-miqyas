@@ -1,34 +1,65 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Icon } from "./icons";
+import { createSupabaseBrowserClient } from "../lib/supabase/client";
 
 function AuthFrame({ children, title, description }: { children: React.ReactNode; title: string; description: string }) {
   return (
     <main className="auth-page">
       <section className="auth-story">
-        <div className="auth-brand"><div className="logo-pending">شعار</div><span><strong>منظومة المقياس</strong><small>شركة الأمد التقنية</small></span></div>
+        <div className="auth-brand"><img className="brand-mark" src="/brand/al-amad-mark.png" alt="شعار شركة الأمد" /><span><strong>منظومة المقياس</strong><small>شركة الأمد</small></span></div>
         <div className="auth-statement"><span>قياس · وضوح · ثقة</span><h1>كل نتيجة لها مصدر، وكل شهادة لها دليل.</h1><p>منصة تشغيلية تجمع القياس القبلي والأداء اللحظي والقياس البعدي تحت معرّف واحد.</p></div>
         <div className="auth-pipeline" aria-hidden="true"><i className="done" /><i className="done" /><i className="active" /><i /><i /></div>
       </section>
       <section className="auth-panel">
-        <div className="auth-panel-inner"><div className="auth-mobile-brand"><div className="logo-pending">شعار</div><strong>منظومة المقياس</strong></div><header><span className="eyebrow">دخول آمن عبر البريد</span><h2>{title}</h2><p>{description}</p></header>{children}<footer><Link href="/verify/VER-AMD-7K9FQ">التحقق من شهادة</Link><span>·</span><Link href="/t/AMD-7K9FQ">صفحة المتدرّب</Link></footer></div>
+        <div className="auth-panel-inner"><div className="auth-mobile-brand"><img className="brand-mark" src="/brand/al-amad-mark.png" alt="شعار شركة الأمد" /><strong>منظومة المقياس</strong></div><header><span className="eyebrow">دخول آمن عبر البريد</span><h2>{title}</h2><p>{description}</p></header>{children}<footer><Link href="/verify/VER-AMD-7K9FQ">التحقق من شهادة</Link><span>·</span><Link href="/t/AMD-7K9FQ">صفحة المتدرّب</Link></footer></div>
       </section>
     </main>
   );
 }
 
 export function LoginPage() {
-  const [step, setStep] = useState<"email" | "code" | "done">("email");
-  const [email, setEmail] = useState("farhad@example.com");
-  const submitEmail = (event: FormEvent) => { event.preventDefault(); setStep("code"); };
-  const submitCode = (event: FormEvent) => { event.preventDefault(); setStep("done"); };
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const submitLogin = async (event: FormEvent) => {
+    event.preventDefault();
+    setErrorMessage("");
+    setIsSubmitting(true);
+
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        setErrorMessage("تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور.");
+        return;
+      }
+
+      router.replace("/dashboard");
+      router.refresh();
+    } catch {
+      setErrorMessage("تعذر الاتصال بخدمة الدخول. حاول مرة أخرى.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <AuthFrame title="تسجيل الدخول" description="سنرسل رمزاً صالحاً لمرة واحدة إلى بريدك. لا تحتاج إلى كلمة مرور.">
-      {step === "email" && <form className="auth-form" onSubmit={submitEmail}><label>البريد الإلكتروني<div className="input-with-icon"><Icon name="mail" size={18} /><input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" dir="ltr" /></div></label><button className="button button-primary button-wide" type="submit">إرسال رمز الدخول <Icon name="arrow" size={17} /></button><p className="auth-alternative">ليس لديك حساب؟ <Link href="/register">طلب الانضمام</Link></p></form>}
-      {step === "code" && <form className="auth-form" onSubmit={submitCode}><div className="sent-note"><Icon name="check" size={18} /><span>أرسلنا الرمز إلى <b dir="ltr">{email}</b></span></div><label>رمز التحقق<input className="otp-input" required inputMode="numeric" pattern="[0-9]{6}" maxLength={6} placeholder="000000" dir="ltr" autoFocus /></label><button className="button button-primary button-wide" type="submit">التحقق والدخول</button><button className="button button-tertiary button-wide" type="button" onClick={() => setStep("email")}>تغيير البريد</button></form>}
-      {step === "done" && <div className="auth-success"><span><Icon name="check" size={28} /></span><h3>تمت المحاكاة بنجاح</h3><p>في النسخة الحقيقية سيُتحقق من الرمز عبر Supabase Auth.</p><Link className="button button-primary button-wide" href="/dashboard">فتح لوحة التشغيل</Link></div>}
+    <AuthFrame title="تسجيل الدخول" description="استخدم بريد الحساب وكلمة المرور التي أنشأتها في المنصة.">
+      <form className="auth-form" onSubmit={submitLogin}>
+        <label>البريد الإلكتروني<div className="input-with-icon"><Icon name="mail" size={18} /><input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" dir="ltr" /></div></label>
+        <label>كلمة المرور<input required type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" dir="ltr" /></label>
+        {errorMessage && <p className="form-error" role="alert">{errorMessage}</p>}
+        <button className="button button-primary button-wide" type="submit" disabled={isSubmitting}>{isSubmitting ? "جارٍ تسجيل الدخول..." : <>تسجيل الدخول <Icon name="arrow" size={17} /></>}</button>
+        <p className="auth-alternative">ليس لديك حساب؟ <Link href="/register">طلب الانضمام</Link></p>
+      </form>
     </AuthFrame>
   );
 }

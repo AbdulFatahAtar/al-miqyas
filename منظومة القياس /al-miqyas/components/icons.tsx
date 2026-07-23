@@ -28,6 +28,7 @@ export type IconName =
   | "mail"
   | "lock"
   | "qr"
+  | "edit"
   | "logout";
 
 export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
@@ -71,6 +72,7 @@ export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
     mail: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m4 7 8 6 8-6" /></>,
     lock: <><rect x="5" y="10" width="14" height="11" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></>,
     qr: <><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z" /><path d="M14 14h2v2h-2zM18 14h2v6h-2zM14 18h2v2h-2z" /></>,
+    edit: <><path d="M4 20h4l11-11-4-4L4 16v4Z" /><path d="m13 7 4 4M4 20l4-1" /></>,
     logout: <><path d="M10 5H5v14h5" /><path d="M13 8l4 4-4 4M8 12h9" /></>,
   };
 
